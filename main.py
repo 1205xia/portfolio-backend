@@ -31,9 +31,12 @@ def send_mail(name, content):
     message["From"] = os.getenv("SMTP_FROM", user)
     message["To"] = os.getenv("CONTACT_EMAIL", "18991739840@163.com")
     message.set_content(f"来自个人网站的私信\n\n姓名：{name}\n\n留言：\n{content}")
-    port = int(os.getenv("SMTP_PORT", "465"))
+    # Keep the mail port out of an environment variable named *PORT: some
+    # deployment dashboards mistake SMTP_PORT for the app's listen port.
+    use_ssl = os.getenv("SMTP_USE_SSL", "1").strip().lower() not in {"0", "false", "no"}
+    port = 465 if use_ssl else 587
     context = ssl.create_default_context()
-    if port == 465:
+    if use_ssl:
         with smtplib.SMTP_SSL(host, port, timeout=10, context=context) as smtp:
             smtp.login(user, password)
             smtp.send_message(message)

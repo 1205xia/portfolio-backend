@@ -11,7 +11,7 @@
 | 环境变量 | 值 |
 | --- | --- |
 | SMTP_HOST | smtp.163.com |
-| SMTP_PORT | 465 |
+| SMTP_USE_SSL | 1（使用 163 的 SSL 端口 465） |
 | SMTP_USER | 18991739840@163.com |
 | SMTP_PASSWORD | 邮箱生成的客户端授权码，不是登录密码 |
 | SMTP_FROM | 18991739840@163.com |
@@ -21,7 +21,7 @@
 
 ## 部署与验证
 
-- 启动命令：`uvicorn main:app --host 0.0.0.0 --port $PORT`。需要持久化保存 portfolio.db，以保留访客数与防重复记录。
+- 启动命令：`uvicorn main:app --host 0.0.0.0 --port $PORT`，平台应用端口必须选择 `8000`。不要添加名为 `SMTP_PORT` 的变量；邮件端口由 `SMTP_USE_SSL=1` 在代码中使用 465，避免平台误把邮件端口当成应用端口。需要持久化保存 portfolio.db，以保留访客数与防重复记录。
 - 更新后端 main.py，并在平台确认实际运行的是新版本；只推送前端不会更新 SnapDeploy。
 - 未配置 SMTP：提交返回 503，不会显示邮件成功。
 - 配置完成后，从网页提交一条独特测试留言，查看 163 收件箱及垃圾邮件文件夹。
